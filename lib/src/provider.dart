@@ -1,8 +1,6 @@
 import 'disposable.dart';
+import 'pod_resolver.dart';
 import 'scope.dart';
-
-// Forward declaration - Pod will be imported where needed
-typedef PodResolver = dynamic;
 
 /// A provider that knows how to create instances of type [T].
 class Provider<T> {

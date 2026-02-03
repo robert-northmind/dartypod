@@ -29,5 +29,6 @@ library dartypod;
 
 export 'src/disposable.dart';
 export 'src/pod.dart';
+export 'src/pod_resolver.dart';
 export 'src/provider.dart';
 export 'src/scope.dart';

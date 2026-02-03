@@ -43,7 +43,7 @@ class ApiServiceImpl implements ApiService {
 
 // Define providers (typically top-level constants)
 final httpClientProvider = Provider<HttpClient>(
-  (pod) => HttpClientImpl(),
+  (_) => HttpClientImpl(),
 );
 
 final apiServiceProvider = Provider<ApiService>(
@@ -53,7 +53,7 @@ final apiServiceProvider = Provider<ApiService>(
 );
 
 // Example with transient scope
-final requestIdProvider = Provider<String>(
+final requestIdProvider = Provider(
   (pod) => DateTime.now().millisecondsSinceEpoch.toString(),
   scope: const TransientScope(),
 );

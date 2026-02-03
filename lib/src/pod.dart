@@ -1,8 +1,9 @@
+import 'pod_resolver.dart';
 import 'provider.dart';
 import 'scope.dart';
 
 /// The main dependency injection container.
-class Pod {
+class Pod implements PodResolver {
   final Map<Provider, dynamic> _cache = {};
   final Map<Provider, dynamic Function(Pod)> _overrides = {};
 
