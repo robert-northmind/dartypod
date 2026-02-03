@@ -171,7 +171,8 @@ void main() {
 
     test('disposes existing cached instance when overriding', () {
       final pod = Pod();
-      final provider = Provider<DisposableService>((pod) => DisposableService());
+      final provider =
+          Provider<DisposableService>((pod) => DisposableService());
 
       final original = pod.resolve(provider);
       pod.overrideProvider(provider, (_) => DisposableService());
@@ -195,7 +196,8 @@ void main() {
 
     test('disposes cached override instance', () {
       final pod = Pod();
-      final provider = Provider<DisposableService>((pod) => DisposableService());
+      final provider =
+          Provider<DisposableService>((pod) => DisposableService());
 
       pod.overrideProvider(provider, (_) => DisposableService());
       final overrideInstance = pod.resolve(provider);
@@ -312,13 +314,93 @@ void main() {
 
       expect(identical(instance1, instance2), isFalse);
     });
+
+    test('clears multiple providers sharing the same scope in hierarchy', () {
+      final pod = Pod();
+      const rootScope = CustomScope('root');
+      const level1Scope = CustomScope('level1', parent: rootScope);
+      const level2Scope = CustomScope('level2', parent: level1Scope);
+
+      // Multiple providers at the same scope level
+      final provider1 = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: level2Scope,
+      );
+      final provider2 = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: level2Scope,
+      );
+      final provider3 = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: level2Scope,
+      );
+
+      // Also providers at different levels
+      final level1Provider = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: level1Scope,
+      );
+      final rootProvider = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: rootScope,
+      );
+
+      // Resolve all
+      final instance1 = pod.resolve(provider1);
+      final instance2 = pod.resolve(provider2);
+      final instance3 = pod.resolve(provider3);
+      final level1Instance = pod.resolve(level1Provider);
+      final rootInstance = pod.resolve(rootProvider);
+
+      // Clear from root - should clear all descendants
+      pod.clearScope(rootScope);
+
+      // All should be new instances
+      expect(identical(instance1, pod.resolve(provider1)), isFalse);
+      expect(identical(instance2, pod.resolve(provider2)), isFalse);
+      expect(identical(instance3, pod.resolve(provider3)), isFalse);
+      expect(identical(level1Instance, pod.resolve(level1Provider)), isFalse);
+      expect(identical(rootInstance, pod.resolve(rootProvider)), isFalse);
+    });
+
+    test('disposes multiple providers sharing the same scope', () {
+      final pod = Pod();
+      const rootScope = CustomScope('root');
+      const level1Scope = CustomScope('level1', parent: rootScope);
+      const level2Scope = CustomScope('level2', parent: level1Scope);
+
+      final provider1 = Provider<DisposableService>(
+        (pod) => DisposableService(),
+        scope: level2Scope,
+      );
+      final provider2 = Provider<DisposableService>(
+        (pod) => DisposableService(),
+        scope: level2Scope,
+      );
+      final provider3 = Provider<DisposableService>(
+        (pod) => DisposableService(),
+        scope: level1Scope,
+      );
+
+      final instance1 = pod.resolve(provider1);
+      final instance2 = pod.resolve(provider2);
+      final instance3 = pod.resolve(provider3);
+
+      pod.clearScope(rootScope);
+
+      expect(instance1.disposed, isTrue);
+      expect(instance2.disposed, isTrue);
+      expect(instance3.disposed, isTrue);
+    });
   });
 
   group('Pod.dispose', () {
     test('disposes all cached instances', () {
       final pod = Pod();
-      final provider1 = Provider<DisposableService>((pod) => DisposableService());
-      final provider2 = Provider<DisposableService>((pod) => DisposableService());
+      final provider1 =
+          Provider<DisposableService>((pod) => DisposableService());
+      final provider2 =
+          Provider<DisposableService>((pod) => DisposableService());
 
       final instance1 = pod.resolve(provider1);
       final instance2 = pod.resolve(provider2);

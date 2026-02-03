@@ -71,10 +71,19 @@ class Pod implements PodResolver {
   /// For hierarchical scopes, this also clears all child scopes.
   void clearScope(ProviderScope scope) {
     final toRemove = <Provider>[];
+    // Memoize scope match results to avoid repeated parent chain traversals
+    // when multiple providers share the same scope.
+    final scopeMatchCache = <ProviderScope, bool>{};
 
     for (final entry in _cache.entries) {
       final provider = entry.key;
-      if (_scopeMatches(provider.scope, scope)) {
+      final providerScope = provider.scope;
+
+      // Check cache first, compute only if needed
+      final matches = scopeMatchCache[providerScope] ??=
+          _scopeMatches(providerScope, scope);
+
+      if (matches) {
         provider.disposeInstance(entry.value);
         toRemove.add(provider);
       }
