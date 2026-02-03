@@ -297,6 +297,32 @@ void main() {
       expect(identical(childInstance1, childInstance2), isFalse);
     });
 
+    test('does not clear sibling scopes', () {
+      final pod = Pod();
+      const scopeA = CustomScope('scopeA');
+      const scopeB = CustomScope('scopeB');
+
+      final providerA = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: scopeA,
+      );
+      final providerB = Provider<SimpleService>(
+        (pod) => SimpleService(),
+        scope: scopeB,
+      );
+
+      final instanceA1 = pod.resolve(providerA);
+      final instanceB1 = pod.resolve(providerB);
+
+      pod.clearScope(scopeA);
+
+      final instanceA2 = pod.resolve(providerA);
+      final instanceB2 = pod.resolve(providerB);
+
+      expect(identical(instanceA1, instanceA2), isFalse); // A was cleared
+      expect(identical(instanceB1, instanceB2), isTrue); // B was NOT cleared
+    });
+
     test('clears deeply nested child scopes', () {
       final pod = Pod();
       const rootScope = CustomScope('root');
