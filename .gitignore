@@ -1,7 +1,9 @@
 # Dart/Flutter
 .dart_tool/
 .packages
+.pub/
 build/
+doc/api/
 pubspec.lock
 
 # IDE

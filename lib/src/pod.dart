@@ -4,14 +4,15 @@ import 'scope.dart';
 
 /// The main dependency injection container.
 class Pod implements PodResolver {
-  final Map<Provider, dynamic> _cache = {};
-  final Map<Provider, dynamic Function(Pod)> _overrides = {};
+  final Map<Provider<Object?>, Object?> _cache = {};
+  final Map<Provider<Object?>, Object? Function(Pod)> _overrides = {};
 
   /// Resolves an instance from the given provider.
   ///
   /// For [SingletonScope] providers, the instance is cached and reused.
   /// For [TransientScope] providers, a new instance is created each time.
   /// For [CustomScope] providers, instances are cached per scope.
+  @override
   T resolve<T>(Provider<T> provider) {
     // Check for override first
     if (_overrides.containsKey(provider)) {
@@ -70,7 +71,7 @@ class Pod implements PodResolver {
   ///
   /// For hierarchical scopes, this also clears all child scopes.
   void clearScope(ProviderScope scope) {
-    final toRemove = <Provider>[];
+    final toRemove = <Provider<Object?>>[];
     // Memoize scope match results to avoid repeated parent chain traversals
     // when multiple providers share the same scope.
     final scopeMatchCache = <ProviderScope, bool>{};
