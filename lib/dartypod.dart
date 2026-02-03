@@ -1,0 +1,33 @@
+/// A minimal, zero-dependency DI (Dependency Injection) package for Dart.
+///
+/// Dartypod provides compile-time safe dependency injection through provider
+/// references rather than runtime type lookup.
+///
+/// ## Basic Usage
+///
+/// ```dart
+/// // Define providers
+/// final httpClientProvider = Provider<HttpClient>((pod) => HttpClientImpl());
+///
+/// final apiServiceProvider = Provider<ApiService>((pod) {
+///   return ApiServiceImpl(client: pod.resolve(httpClientProvider));
+/// });
+///
+/// // Resolve dependencies
+/// final pod = Pod();
+/// final apiService = pod.resolve(apiServiceProvider);
+/// ```
+///
+/// ## Testing with Overrides
+///
+/// ```dart
+/// final pod = Pod();
+/// pod.overrideProvider(httpClientProvider, (_) => MockHttpClient());
+/// final apiService = pod.resolve(apiServiceProvider); // Uses mock
+/// ```
+library dartypod;
+
+export 'src/disposable.dart';
+export 'src/pod.dart';
+export 'src/provider.dart';
+export 'src/scope.dart';
