@@ -44,7 +44,8 @@ void main() {
     });
 
     test('disposeInstance calls Disposable.dispose', () {
-      final provider = Provider<DisposableService>((pod) => DisposableService());
+      final provider =
+          Provider<DisposableService>((pod) => DisposableService());
       final instance = DisposableService();
 
       provider.disposeInstance(instance);
@@ -79,7 +80,9 @@ void main() {
       expect(instance.disposed, isFalse);
     });
 
-    test('disposeInstance does nothing for non-Disposable without custom dispose', () {
+    test(
+        'disposeInstance does nothing for non-Disposable without custom dispose',
+        () {
       final provider = Provider<MockService>((pod) => MockService('test'));
       final instance = MockService('test');
 
