@@ -27,7 +27,7 @@ dart tool/pre_release_check.dart --post
 
 # Push and create PR, then after merge:
 git checkout main && git pull origin main
-git tag v0.2.0 && git push origin v0.2.0
+dart tool/create_release.dart
 ```
 
 ## Release Process
@@ -98,16 +98,24 @@ Then create a Pull Request to `main` with:
 - Title: `chore: bump version to v0.2.0`
 - Description: Summary of changes from the changelog
 
-### 7. Merge and Tag
+### 7. Create Release
 
-After PR review and merge:
+After PR review and merge, use the release script:
 
 ```bash
 git checkout main
 git pull origin main
-git tag v0.2.0
-git push origin v0.2.0
+dart tool/create_release.dart
 ```
+
+> **Tip:** Use `dart tool/create_release.dart --dry-run` to preview without creating anything.
+
+This will:
+- Read the version from `pubspec.yaml`
+- Extract release notes from `CHANGELOG.md`
+- Show a preview and ask for confirmation
+- Create and push the git tag
+- Create a GitHub release with changelog content and compare link
 
 ### 8. Automated Publishing
 

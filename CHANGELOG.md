@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Release automation with tag-based publishing to pub.dev
 - Version bump tooling (`dart tool/version_bump.dart`)
 - Pre-release validation (`dart tool/pre_release_check.dart`)
+- Release creation script (`dart tool/create_release.dart`) - creates tag, pushes, and creates GitHub release with changelog
 - CI changelog check with `skip-changelog` label escape hatch
 - `CONTRIBUTING.md` with development workflow and PR guidelines
 - `RELEASING.md` documentation for maintainers
