@@ -79,24 +79,9 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Check CHANGELOG has unreleased content
-        run: |
-          # Check if CHANGELOG.md exists
-          if [ ! -f CHANGELOG.md ]; then
-            echo "❌ CHANGELOG.md not found"
-            exit 1
-          fi
+      - uses: dart-lang/setup-dart@e51d8e571e22473a2ddebf0ef8a2123f0ab2c02c # v1.7.1
+        with:
+          sdk: stable
 
-          # Extract content between ## [Unreleased] and next ## heading
-          unreleased_content=$(awk '/^## \[Unreleased\]/{flag=1; next} /^## \[/{flag=0} flag' CHANGELOG.md | grep -v '^[[:space:]]*$' | head -20)
-
-          if [ -z "$unreleased_content" ]; then
-            echo "❌ No content found under ## [Unreleased] section"
-            echo ""
-            echo "Please add your changes to the CHANGELOG.md under the ## [Unreleased] section."
-            echo "If this PR doesn't require a changelog entry, add the 'skip-changelog' label."
-            exit 1
-          else
-            echo "✅ Found unreleased content in CHANGELOG.md:"
-            echo "$unreleased_content"
-          fi
+      - name: Check CHANGELOG
+        run: dart tool/check_changelog.dart --branch "${{ github.head_ref }}"
