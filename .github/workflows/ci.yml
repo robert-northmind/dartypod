@@ -66,3 +66,37 @@ jobs:
 
       - name: Run example
         run: dart run example/example.dart
+
+  changelog:
+    name: Changelog Check
+    runs-on: ubuntu-latest
+    # Only run on pull requests without skip-changelog label
+    if: >-
+      github.event_name == 'pull_request' &&
+      !contains(github.event.pull_request.labels.*.name, 'skip-changelog')
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Check CHANGELOG has unreleased content
+        run: |
+          # Check if CHANGELOG.md exists
+          if [ ! -f CHANGELOG.md ]; then
+            echo "❌ CHANGELOG.md not found"
+            exit 1
+          fi
+
+          # Extract content between ## [Unreleased] and next ## heading
+          unreleased_content=$(awk '/^## \[Unreleased\]/{flag=1; next} /^## \[/{flag=0} flag' CHANGELOG.md | grep -v '^[[:space:]]*$' | head -20)
+
+          if [ -z "$unreleased_content" ]; then
+            echo "❌ No content found under ## [Unreleased] section"
+            echo ""
+            echo "Please add your changes to the CHANGELOG.md under the ## [Unreleased] section."
+            echo "If this PR doesn't require a changelog entry, add the 'skip-changelog' label."
+            exit 1
+          else
+            echo "✅ Found unreleased content in CHANGELOG.md:"
+            echo "$unreleased_content"
+          fi

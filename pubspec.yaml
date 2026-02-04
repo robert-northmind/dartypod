@@ -1,6 +1,7 @@
 name: dartypod
-description: A minimal, zero-dependency DI (Dependency Injection) package for Dart.
+description: A minimal Service Locator with compile-time safe provider references, enabling clean dependency injection patterns.
 version: 0.1.0
+repository: https://github.com/robert-northmind/dartypod
 
 environment:
   sdk: ^3.0.0

@@ -2,9 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on Keep a Changelog, and this project adheres to
-Semantic Versioning.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 0.1.0 - 2026-02-03
+## [Unreleased]
 
-- Initial release.
+### Added
+
+- Release automation with tag-based publishing to pub.dev
+- Version bump tooling (`dart tool/version_bump.dart`)
+- Pre-release validation (`dart tool/pre_release_check.dart`)
+- CI changelog check with `skip-changelog` label escape hatch
+- `CONTRIBUTING.md` with development workflow and PR guidelines
+- `RELEASING.md` documentation for maintainers
+- Contributing section in README
+
+## [0.1.0] - 2026-02-03
+
+### Added
+
+- Initial release with core DI functionality
+- `Pod` class for defining dependencies with lazy initialization
+- `Provider` for scoped dependency management
+- `Scope` for hierarchical dependency resolution
+- Zero external dependencies

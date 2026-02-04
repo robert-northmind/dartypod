@@ -1,6 +1,6 @@
 # dartypod
 
-A minimal, zero-dependency DI (Dependency Injection) package for Dart.
+A minimal Service Locator with compile-time safe provider references, enabling clean dependency injection patterns in Dart.
 
 Dartypod provides compile-time safe dependency injection through provider references rather than runtime type lookup.
 
@@ -18,8 +18,13 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  dartypod:
-    path: ../dartypod # or publish to pub.dev
+  dartypod: ^0.1.0
+```
+
+Then run:
+
+```bash
+dart pub get
 ```
 
 ## Usage
@@ -158,6 +163,10 @@ Call `pod.dispose()` to clean up all cached instances.
 - `SingletonScope` - Cache and reuse (default)
 - `TransientScope` - Always create new
 - `CustomScope(name, {parent})` - Custom with optional hierarchy
+
+## Contributing
+
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for how to get started.
 
 ## License
 
