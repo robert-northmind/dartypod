@@ -84,4 +84,6 @@ jobs:
           sdk: stable
 
       - name: Check CHANGELOG
-        run: dart tool/check_changelog.dart --branch "${{ github.head_ref }}"
+        env:
+          BRANCH_NAME: ${{ github.head_ref }}
+        run: dart tool/check_changelog.dart --branch "$BRANCH_NAME"
