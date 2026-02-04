@@ -25,7 +25,7 @@
 /// pod.overrideProvider(httpClientProvider, (_) => MockHttpClient());
 /// final apiService = pod.resolve(apiServiceProvider); // Uses mock
 /// ```
-library dartypod;
+library;
 
 export 'src/disposable.dart';
 export 'src/pod.dart';
