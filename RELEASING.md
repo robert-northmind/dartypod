@@ -7,25 +7,28 @@ This document describes the process for releasing new versions of dartypod to pu
 ## Quick Reference
 
 ```bash
-# Create release branch
+# 1. Create release branch
 git checkout main && git pull origin main
 git checkout -b release/v0.2.0
 
-# Pre-release validation
+# 2. Pre-release validation
 dart tool/pre_release_check.dart
 
-# Version bump (choose one)
+# 3. Version bump (choose one)
 dart tool/version_bump.dart patch   # 0.1.0 -> 0.1.1
 dart tool/version_bump.dart minor   # 0.1.0 -> 0.2.0
 dart tool/version_bump.dart major   # 0.1.0 -> 1.0.0
 
-# Commit
+# 4. Commit
 git add . && git commit -m "chore: bump version to v0.2.0"
 
-# Post-bump validation
+# 5. Post-bump validation (dry-run publish check)
 dart tool/pre_release_check.dart --post
 
-# Push and create PR, then after merge:
+# 6. Push and create PR
+git push origin release/v0.2.0
+
+# 7. After PR merge, create release
 git checkout main && git pull origin main
 dart tool/create_release.dart
 ```

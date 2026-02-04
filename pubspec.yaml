@@ -1,6 +1,6 @@
 name: dartypod
 description: A minimal Service Locator with compile-time safe provider references, enabling clean dependency injection patterns.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/robert-northmind/dartypod
 
 environment:
