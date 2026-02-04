@@ -1,6 +1,7 @@
 name: dartypod
 description: A minimal, zero-dependency DI (Dependency Injection) package for Dart.
 version: 0.1.0
+repository: https://github.com/robert-northmind/dartypod
 
 environment:
   sdk: ^3.0.0
