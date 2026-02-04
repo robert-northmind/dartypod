@@ -70,26 +70,16 @@ jobs:
   changelog:
     name: Changelog Check
     runs-on: ubuntu-latest
-    # Only run on pull requests (not push to main)
-    if: github.event_name == 'pull_request'
+    # Only run on pull requests without skip-changelog label
+    if: >-
+      github.event_name == 'pull_request' &&
+      !contains(github.event.pull_request.labels.*.name, 'skip-changelog')
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
-      - name: Check for skip-changelog label
-        id: check-label
-        run: |
-          # Check if PR has the skip-changelog label
-          if echo '${{ toJson(github.event.pull_request.labels.*.name) }}' | grep -q 'skip-changelog'; then
-            echo "skip=true" >> $GITHUB_OUTPUT
-            echo "Skipping changelog check due to 'skip-changelog' label"
-          else
-            echo "skip=false" >> $GITHUB_OUTPUT
-          fi
-
       - name: Check CHANGELOG has unreleased content
-        if: steps.check-label.outputs.skip != 'true'
         run: |
           # Check if CHANGELOG.md exists
           if [ ! -f CHANGELOG.md ]; then
