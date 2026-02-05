@@ -106,6 +106,71 @@ void main() {
       expect(identical(dependent1.dependency, dependent2.dependency), isTrue);
       expect(SimpleService.instanceCount, equals(1));
     });
+
+    test('throws PodCycleError on circular dependencies', () {
+      final pod = Pod();
+      late Provider<String> providerA;
+      late Provider<String> providerB;
+      late Provider<String> providerC;
+
+      providerA = Provider<String>(
+        (pod) => pod.resolve(providerB),
+        debugName: 'A',
+      );
+      providerB = Provider<String>(
+        (pod) => pod.resolve(providerC),
+        // No debugName - tests the Provider<T> fallback format
+      );
+      providerC = Provider<String>(
+        (pod) => pod.resolve(providerA),
+        debugName: 'C',
+      );
+
+      expect(
+        () => pod.resolve(providerA),
+        throwsA(
+          isA<PodCycleError>().having(
+            (error) => error.toString(),
+            'message',
+            contains('A -> Provider<String> -> C -> A'),
+          ),
+        ),
+      );
+    });
+
+    test('does not treat concurrent async resolves as a cycle', () async {
+      final pod = Pod();
+      final providerD = Provider<String>(
+        (pod) => 'D',
+        debugName: 'D',
+      );
+      final providerC = Provider<String>(
+        (pod) => pod.resolve(providerD),
+        debugName: 'C',
+      );
+      final providerB = Provider<String>(
+        (pod) => pod.resolve(providerC),
+        debugName: 'B',
+      );
+      final providerA = Provider<Future<String>>(
+        (pod) async {
+          final value = pod.resolve(providerB);
+          await Future<void>.delayed(Duration.zero);
+          return 'A$value';
+        },
+        debugName: 'A',
+      );
+      final providerE = Provider<Future<String>>(
+        (pod) => pod.resolve(providerA),
+        debugName: 'E',
+      );
+
+      final futureA = pod.resolve(providerA);
+      final futureE = pod.resolve(providerE);
+
+      expect(identical(futureA, futureE), isTrue);
+      expect(await futureE, equals('AD'));
+    });
   });
 
   group('Pod.overrideProvider', () {

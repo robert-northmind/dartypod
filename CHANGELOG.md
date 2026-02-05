@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Circular dependency detection with `PodCycleError` during resolution
+- Optional `debugName` for providers to improve diagnostics
+
 ## [0.1.1] - 2026-02-04
 
 ### Added

@@ -1,3 +1,4 @@
+import 'errors.dart';
 import 'pod_resolver.dart';
 import 'provider.dart';
 import 'scope.dart';
@@ -6,12 +7,16 @@ import 'scope.dart';
 class Pod implements PodResolver {
   final Map<Provider<Object?>, Object?> _cache = {};
   final Map<Provider<Object?>, Object? Function(Pod)> _overrides = {};
+  final List<Provider<Object?>> _resolvingStack = [];
+  final Set<Provider<Object?>> _resolvingSet = {};
 
   /// Resolves an instance from the given provider.
   ///
   /// For [SingletonScope] providers, the instance is cached and reused.
   /// For [TransientScope] providers, a new instance is created each time.
   /// For [CustomScope] providers, instances are cached per scope.
+  ///
+  /// Throws [PodCycleError] if a circular dependency is detected.
   @override
   T resolve<T>(Provider<T> provider) {
     // Check for override first
@@ -19,19 +24,19 @@ class Pod implements PodResolver {
       final builder = _overrides[provider]!;
       // Overrides follow the same scoping rules
       if (provider.scope is TransientScope) {
-        return builder(this) as T;
+        return _buildWithCycleCheck(provider, () => builder(this) as T);
       }
       if (_cache.containsKey(provider)) {
         return _cache[provider] as T;
       }
-      final instance = builder(this) as T;
+      final instance = _buildWithCycleCheck(provider, () => builder(this) as T);
       _cache[provider] = instance;
       return instance;
     }
 
     // Transient scope always creates new instance
     if (provider.scope is TransientScope) {
-      return provider.build(this);
+      return _buildWithCycleCheck(provider, () => provider.build(this));
     }
 
     // Check cache for singleton and custom scopes
@@ -40,9 +45,34 @@ class Pod implements PodResolver {
     }
 
     // Create and cache new instance
-    final instance = provider.build(this);
+    final instance = _buildWithCycleCheck(provider, () => provider.build(this));
     _cache[provider] = instance;
     return instance;
+  }
+
+  T _buildWithCycleCheck<T>(Provider<T> provider, T Function() build) {
+    final resolvingProvider = provider as Provider<Object?>;
+    if (_resolvingSet.contains(resolvingProvider)) {
+      throw _createCycleError(resolvingProvider);
+    }
+
+    _resolvingSet.add(resolvingProvider);
+    _resolvingStack.add(resolvingProvider);
+
+    try {
+      return build();
+    } finally {
+      _resolvingStack.removeLast();
+      _resolvingSet.remove(resolvingProvider);
+    }
+  }
+
+  PodCycleError _createCycleError(Provider<Object?> provider) {
+    final startIndex = _resolvingStack.indexOf(provider);
+    if (startIndex == -1) {
+      return PodCycleError([..._resolvingStack, provider]);
+    }
+    return PodCycleError([..._resolvingStack.sublist(startIndex), provider]);
   }
 
   /// Overrides a provider with a custom builder for testing.

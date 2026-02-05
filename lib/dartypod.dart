@@ -29,6 +29,7 @@
 library;
 
 export 'src/disposable.dart';
+export 'src/errors.dart';
 export 'src/pod.dart';
 export 'src/pod_resolver.dart';
 export 'src/provider.dart';
