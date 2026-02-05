@@ -72,6 +72,11 @@ Future<String?> getRepoUrl() async {
 Future<String> getChangelogForVersion(String version) async {
   final file = File('CHANGELOG.md');
   final content = await file.readAsString();
+  return extractChangelogForVersion(content, version);
+}
+
+/// Extract changelog content for a specific version from full content
+String extractChangelogForVersion(String content, String version) {
   final lines = content.split('\n');
 
   final versionHeader = '## [$version]';
@@ -82,9 +87,7 @@ Future<String> getChangelogForVersion(String version) async {
     final line = lines[i];
     if (line.startsWith(versionHeader)) {
       startIndex = i + 1; // Start after the header
-    } else if (startIndex != -1 &&
-        line.startsWith('## [') &&
-        !line.contains(version)) {
+    } else if (startIndex != -1 && line.startsWith('## [')) {
       endIndex = i;
       break;
     }

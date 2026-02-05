@@ -114,7 +114,7 @@ class PreReleaseChecker {
   }
 
   /// Run pre-version-bump checks
-  Future<bool> runPreChecks() async {
+  Future<bool> runPreChecks({bool skipChangelog = false}) async {
     stdout.writeln('');
     stdout.writeln(
         '${Colors.blue}🔍 Running pre-version-bump checks...${Colors.reset}');
@@ -129,7 +129,13 @@ class PreReleaseChecker {
     await _runCheck('Run tests', _checkTests);
 
     // Release readiness
-    await _runCheck('Check CHANGELOG has unreleased content', _checkChangelog);
+    if (skipChangelog) {
+      stdout.writeln(
+          '${Colors.yellow}⊘${Colors.reset} Check CHANGELOG has unreleased content... ${Colors.yellow}skipped${Colors.reset}');
+    } else {
+      await _runCheck(
+          'Check CHANGELOG has unreleased content', _checkChangelog);
+    }
 
     // Summary
     stdout.writeln('');
@@ -176,9 +182,24 @@ class PreReleaseChecker {
 
 /// Main entry point
 Future<void> main(List<String> args) async {
+  final skipChangelog = args.contains('--skip-changelog');
+  final isPost = args.contains('--post');
+  final showHelp = args.contains('--help') || args.contains('-h');
+
+  if (showHelp) {
+    stdout.writeln('Usage: dart tool/pre_release_check.dart [options]');
+    stdout.writeln('');
+    stdout.writeln('Options:');
+    stdout.writeln('  --post            Run post-version-bump checks');
+    stdout.writeln(
+        '  --skip-changelog  Skip changelog check (for skip-changelog PRs)');
+    stdout.writeln('  --help, -h        Show this help message');
+    exit(0);
+  }
+
   final checker = PreReleaseChecker();
 
-  if (args.isNotEmpty && args[0] == '--post') {
+  if (isPost) {
     // Post-version-bump checks
     final success = await checker.runPostChecks();
     if (!success) {
@@ -195,7 +216,7 @@ Future<void> main(List<String> args) async {
         '  3. After merge, tag and push: git tag v<version> && git push origin v<version>');
   } else {
     // Pre-version-bump checks
-    final success = await checker.runPreChecks();
+    final success = await checker.runPreChecks(skipChangelog: skipChangelog);
     if (!success) {
       exit(1);
     }
