@@ -75,6 +75,7 @@ analyzer:
 ```
 
 This means:
+
 - Avoid `dynamic` types
 - Explicit type annotations where inference isn't possible
 - No implicit casts
@@ -113,22 +114,22 @@ Use [Conventional Commits](https://www.conventionalcommits.org/):
 
 This workspace has a Dart MCP server available. Prefer using MCP tools over shell commands:
 
-| Task | MCP Tool | Shell Alternative |
-|------|----------|-------------------|
-| Run tests | `run_tests` | `dart test` |
-| Analyze code | `analyze_files` | `dart analyze` |
-| Format code | `dart_format` | `dart format .` |
-| Apply fixes | `dart_fix` | `dart fix --apply` |
-| Pub commands | `pub` | `dart pub get` |
+| Task         | MCP Tool        | Shell Alternative  |
+| ------------ | --------------- | ------------------ |
+| Run tests    | `run_tests`     | `dart test`        |
+| Analyze code | `analyze_files` | `dart analyze`     |
+| Format code  | `dart_format`   | `dart format .`    |
+| Apply fixes  | `dart_fix`      | `dart fix --apply` |
+| Pub commands | `pub`           | `dart pub get`     |
 
 ## Key Documentation
 
-| Document | Purpose |
-|----------|---------|
-| [README.md](README.md) | Package overview, API reference, usage examples |
+| Document                           | Purpose                                          |
+| ---------------------------------- | ------------------------------------------------ |
+| [README.md](README.md)             | Package overview, API reference, usage examples  |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Development setup, PR workflow, local validation |
-| [RELEASING.md](RELEASING.md) | Version bumping, release process, publishing |
-| [CHANGELOG.md](CHANGELOG.md) | Version history and changes |
+| [RELEASING.md](RELEASING.md)       | Version bumping, release process, publishing     |
+| [CHANGELOG.md](CHANGELOG.md)       | Version history and changes                      |
 
 ## Common Tasks
 
@@ -157,3 +158,38 @@ dart tool/pre_release_check.dart
 ```
 
 This runs: dependency check, formatting, analysis, tests, and changelog validation.
+
+## Note to the Agent
+
+This AGENTS.md is a collaborative document. You are encouraged to improve it.
+
+**When to add learnings:**
+
+- You discover a pattern or convention specific to this codebase
+- You make a mistake and figure out the correct approach
+- You learn something that would help future sessions
+
+**How to add learnings:**
+
+- Add items to the "Agent Learnings" section below with today's date
+- Keep entries concise and actionable
+- Use them as real guidance in future work
+
+**When to remove learnings:**
+
+- Following an item causes problems or gets negative feedback
+- An item turns out to be incorrect or outdated
+
+**Promoting learnings:**
+
+- Items that prove consistently useful can be moved to the appropriate main section above
+- When promoting, remove the date (it's now permanent guidance)
+
+## Agent Learnings
+
+<!--
+Agent-contributed learnings go here. Format:
+- (YYYY-MM-DD) Description of the learning
+-->
+
+- (2025-02-05) When creating a PR that skips the changelog requirement, add the `skip-changelog` label directly in the `gh pr create` command using `--label "skip-changelog"`.
