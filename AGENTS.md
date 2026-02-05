@@ -157,3 +157,32 @@ dart tool/pre_release_check.dart
 ```
 
 This runs: dependency check, formatting, analysis, tests, and changelog validation.
+
+## Note to the Agent
+
+This AGENTS.md is a collaborative document. You are encouraged to improve it.
+
+**When to add learnings:**
+- You discover a pattern or convention specific to this codebase
+- You make a mistake and figure out the correct approach
+- You learn something that would help future sessions
+
+**How to add learnings:**
+- Add items to the "Agent Learnings" section below with today's date
+- Keep entries concise and actionable
+- Use them as real guidance in future work
+
+**When to remove learnings:**
+- Following an item causes problems or gets negative feedback
+- An item turns out to be incorrect or outdated
+
+**Promoting learnings:**
+- Items that prove consistently useful can be moved to the appropriate main section above
+- When promoting, remove the date (it's now permanent guidance)
+
+## Agent Learnings
+
+<!-- 
+Agent-contributed learnings go here. Format:
+- (YYYY-MM-DD) Description of the learning
+-->
